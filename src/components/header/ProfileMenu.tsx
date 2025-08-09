@@ -12,18 +12,28 @@ import {
   Avatar,
 } from "@mui/material";
 import pages from "@/components/header/header";
-import settings  from "@/components/header/header";
-import handleOpenUserMenu from "@/components/header/header";
-import handleCloseNavMenu from "@/components/header/header";
-import handleCloseUserMenu from "@/components/header/header";
-import handleOpenNavMenu from "@/components/header/header";
-import anchorElUser from "@/components/header/header";
+import settings from "@/components/header/header";
+
 
 
 export default function ProfileMenu() {
-    const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
-      null
-    );
+  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
+  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+
+  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElNav(event.currentTarget);
+  };
+  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElUser(event.currentTarget);
+  };
+
+  const handleCloseNavMenu = () => {
+    setAnchorElNav(null);
+  };
+
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
   return (
     <>
       <Box sx={{ flexGrow: 0 }}>
@@ -57,5 +67,4 @@ export default function ProfileMenu() {
       </Box>
     </>
   );
-}
 }
