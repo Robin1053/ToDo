@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Sour_Gummy, Pacifico, Roboto} from "next/font/google";
+import { Sour_Gummy, Pacifico, Roboto } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Roboto({
@@ -20,6 +20,9 @@ const pacifico = Pacifico({
 export const metadata: Metadata = {
   title: "Todo App",
   description: "An simple todo application built with Next.js",
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",}
 };
 
 export default function RootLayout({
