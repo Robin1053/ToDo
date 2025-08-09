@@ -4,47 +4,41 @@ import * as React from "react";
 import ProfileMenu from "@/components/header/ProfileMenu";
 import HeaderLogo from "@/components/header/headerLogo";
 import { Container, Toolbar, AppBar, Box, Button } from "@mui/material";
+import { pages } from "@/config/navigation";
 
 export default function Header() {
-  const pages = ["Home", "ToDo", "Notes"];
-  const settings = [/*"Profile", "Account", "Dashboard", "Logout"*/ "noch zu zu implimentieren"];
-
-
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
-
-  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElNav(event.currentTarget);
-  };
-  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElUser(event.currentTarget);
+  const getPageUrl = (page: string) => {
+    return page.toLowerCase() === "home" ? "/" : `/${page.toLowerCase()}`;
   };
 
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
-  };
-
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
-  };
   return (
     <header>
-      <AppBar position="static" color="inherit">
+      <AppBar position="static" sx={{ backgroundColor: "white", color: "black" }}>
         <Container maxWidth="xl">
           <Toolbar disableGutters>
+            {/* Header Logo Komponente */}
             <HeaderLogo />
+            
+            {/* Desktop Navigation */}
             <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
               {pages.map((page) => (
                 <Button
                   key={page}
-                  onClick={handleCloseNavMenu}
-                  sx={{ my: 2, color: "black", display: "block" }}
-                  href={"/" + page.toLowerCase()}
+                  component="a"
+                  href={getPageUrl(page)}
+                  sx={{ 
+                    my: 2, 
+                    color: "black", 
+                    display: "block",
+                    textDecoration: "none"
+                  }}
                 >
                   {page}
                 </Button>
               ))}
             </Box>
+            
+            {/* Profile Menu Komponente */}
             <ProfileMenu />
           </Toolbar>
         </Container>

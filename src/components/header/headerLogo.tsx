@@ -1,42 +1,32 @@
+"use client";
+
 import * as React from "react";
 import AdbIcon from "@mui/icons-material/Adb";
 import { Typography, Box, IconButton, MenuItem, Menu } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import pages from "@/components/header/header";
-import settings  from "@/components/header/header";
+import { pages } from "@/config/navigation";
+import { useMenuHandlers } from "@/hooks/useMenuHandlers";
 
 export default function HeaderLogo() {
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+  const {
+    anchorElNav,
+    handleOpenNavMenu,
+    handleCloseNavMenu,
+  } = useMenuHandlers();
 
-  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElNav(event.currentTarget);
-  };
-  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElUser(event.currentTarget);
-  };
-
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
-  };
-
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
+  const getPageUrl = (page: string) => {
+    return page.toLowerCase() === "home" ? "/" : `/${page.toLowerCase()}`;
   };
 
   return (
-    <Box
-      sx={{
-        display: { xs: "flex", md: "flex" },
-        alignItems: "center",
-        textDecoration: "none",
-      }}
-    >
+    <>
+      {/* Desktop Logo */}
       <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
       <Typography
         variant="h6"
         noWrap
         component="a"
+        href="/"
         sx={{
           mr: 2,
           display: { xs: "none", md: "flex" },
@@ -49,6 +39,8 @@ export default function HeaderLogo() {
       >
         LOGO
       </Typography>
+
+      {/* Mobile Menu Button */}
       <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
         <IconButton
           size="large"
@@ -76,13 +68,45 @@ export default function HeaderLogo() {
           onClose={handleCloseNavMenu}
           sx={{ display: { xs: "block", md: "none" } }}
         >
-          {pages.map(pages() => (
-            <MenuItem key={pages} onClick={handleCloseNavMenu}>
-              <Typography sx={{ textAlign: "center" }}>{pages}</Typography>
+          {pages.map((page) => (
+            <MenuItem key={page} onClick={handleCloseNavMenu}>
+              <Typography 
+                component="a" 
+                href={getPageUrl(page)}
+                sx={{ 
+                  textAlign: "center",
+                  textDecoration: "none",
+                  color: "inherit",
+                  width: "100%"
+                }}
+              >
+                {page}
+              </Typography>
             </MenuItem>
           ))}
         </Menu>
       </Box>
-    </Box>
+
+      {/* Mobile Logo */}
+      <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
+      <Typography
+        variant="h5"
+        noWrap
+        component="a"
+        href="/"
+        sx={{
+          mr: 2,
+          display: { xs: "flex", md: "none" },
+          flexGrow: 1,
+          fontFamily: "monospace",
+          fontWeight: 700,
+          letterSpacing: ".3rem",
+          color: "inherit",
+          textDecoration: "none",
+        }}
+      >
+        LOGO
+      </Typography>
+    </>
   );
 }
