@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Sour_Gummy, Pacifico, Roboto } from "next/font/google";
 import "./globals.css";
+import Header from "@/components/header/header";
 
 const geistSans = Roboto({
   subsets: ["latin"],
@@ -35,6 +36,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${pacifico.variable} antialiased p-2`}
       >
+        <Header />
         {children}
       </body>
     </html>

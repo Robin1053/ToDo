@@ -16,6 +16,7 @@ export default function HeaderLogo() {
 
   const getPageUrl = (page: string) => {
     return page.toLowerCase() === "home" ? "/" : `/${page.toLowerCase()}`;
+      
   };
 
   return (

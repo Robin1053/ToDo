@@ -10,10 +10,18 @@ import {
   Typography,
   Avatar,
 } from "@mui/material";
-import { settings } from "@/config/navigation";
+import { SettingsNoSession } from "@/config/navigation";
 import { useMenuHandlers } from "@/hooks/useMenuHandlers";
+import { HeaderMenuItemsSession } from "@/config/navigation";
+
 
 export default function ProfileMenu() {
+
+  const getPageUrl = (HeaderMenuItemsSession: string) => {
+    return HeaderMenuItemsSession.toLowerCase();
+
+  };
+
   const {
     anchorElUser,
     handleOpenUserMenu,
@@ -24,7 +32,7 @@ export default function ProfileMenu() {
     <Box sx={{ flexGrow: 0 }}>
       <Tooltip title="Open settings">
         <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-          <Avatar alt="User Avatar" src="/static/images/avatar/2.jpg" />
+          <Avatar alt="User Avatar" />
         </IconButton>
       </Tooltip>
       <Menu
@@ -43,9 +51,15 @@ export default function ProfileMenu() {
         open={Boolean(anchorElUser)}
         onClose={handleCloseUserMenu}
       >
-        {settings.map((setting: string) => (
-          <MenuItem key={setting} onClick={handleCloseUserMenu}>
-            <Typography sx={{ textAlign: "center" }}>{setting}</Typography>
+        {SettingsNoSession.map((setting: string) => (
+          <MenuItem
+            key={setting}
+            onClick={handleCloseUserMenu}
+            component="a"
+            href={`/auth/${setting.toLowerCase()}`}>
+            <Typography
+              sx={{ textAlign: "center" }}>{setting}
+            </Typography>
           </MenuItem>
         ))}
       </Menu>
