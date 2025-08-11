@@ -1,4 +1,5 @@
-import Todo from "@/components/todo/todo";
+import TodoChat from "@/components/todo/todochat";
+import { ToDo } from "@/components/todo/todo";
 
 export const metadata = {
   title: "Todo",
@@ -10,7 +11,7 @@ export default function todo() {
 
   return (
     <>
-  <Todo />    
+  <ToDo />    
     </>
   );
 }
