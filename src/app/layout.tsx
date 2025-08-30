@@ -1,16 +1,19 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Roboto, Sour_Gummy, Pacifico } from "next/font/google";
 import "./globals.css";
+import Navbar from "@/components/NavMenu/Navbar"
 
-const geistSans = Geist({
+const geistSans = Roboto({
   variable: "--font-geist-sans",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
+const geistMono = Sour_Gummy({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
+
+
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -27,8 +30,19 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <Navbar />
+        <div id="g_id_onload"
+          data-client_id={process.env.GOOGLE_CLIENT_ID}
+          data-context="signin"
+          data-ux_mode="redirect"
+          data-login_uri={process.env.GOOGLE_LOGIN_URI || "http://localhost:3000/api/auth/google"}
+          data-callback={process.env.GOOGLE_CALLBACK || "http://localhost:3000/api/auth/callback/google"}
+          data-itp_support="true" />
+
+
         {children}
+
       </body>
-    </html>
+    </html >
   );
 }
