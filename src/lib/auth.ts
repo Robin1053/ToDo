@@ -1,12 +1,16 @@
 import { betterAuth } from "better-auth";
-import Database from "better-sqlite3";
 import { passkey } from "better-auth/plugins/passkey";
 import { oneTap } from "better-auth/plugins";
 import { nextCookies } from "better-auth/next-js";
+import { prismaAdapter } from "better-auth/adapters/prisma";
+import { PrismaClient } from "@prisma/client";
 
+const prisma = new PrismaClient();
 
 export const auth = betterAuth({
-    database: new Database("./src/lib/sqlite.db"),
+  database: prismaAdapter(prisma, {
+    provider: "sqlite",
+  }),
 
   emailAndPassword: {
     enabled: true,

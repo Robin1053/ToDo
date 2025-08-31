@@ -1,18 +1,22 @@
 "use client"
 
 import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import Menu from '@mui/material/Menu';
+import {
+    AppBar,
+    Box,
+    Toolbar,
+    IconButton,
+    Typography,
+    Menu,
+    Container,
+    Button,
+    Tooltip,
+    MenuItem,
+} from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import Container from '@mui/material/Container';
-import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
-import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
+import { navigationItems, HeaderMenuItemsSession, MenuItemsNoSession } from "@/config/navigation";
+import { useMenuHandlers } from "@/hooks/useMenuHandlers";
 
 
 type NavbarProps = {
@@ -20,30 +24,28 @@ type NavbarProps = {
 }
 
 
+// Hier simulieren wir den Anmeldestatus.
+// In einer echten App würde dieser Wert aus einem globalen State oder Context kommen.
+const isLoggedIn = false;
+
 export default function Navbar({ avatar }: NavbarProps) {
-
-    const pages = ['Products', 'Pricing', 'Blog'];
-    const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
-
-    const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
-    const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
-
-    const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
-        setAnchorElNav(event.currentTarget);
-    };
-    const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-        setAnchorElUser(event.currentTarget);
-    };
-    const handleCloseNavMenu = () => {
-        setAnchorElNav(null);
-    };
-    const handleCloseUserMenu = () => {
-        setAnchorElUser(null);
-    };
+    // Dynamische Bestimmung der Menüpunkte basierend auf dem Anmeldestatus
+    const userMenuItems = isLoggedIn ? HeaderMenuItemsSession : MenuItemsNoSession;
+    
+    const {
+        anchorElUser,
+        handleOpenUserMenu,
+        handleCloseUserMenu,
+        anchorElNav,
+        handleOpenNavMenu,
+        handleCloseNavMenu,
+    } = useMenuHandlers();
+    
     return (
         <AppBar position="static" color="primary">
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
+                    {/* LOGO - Desktop */}
                     <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
                     <Typography
                         variant="h6"
@@ -63,6 +65,7 @@ export default function Navbar({ avatar }: NavbarProps) {
                         LOGO
                     </Typography>
 
+                    {/* Navigationsmenü - Mobile Ansicht */}
                     <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
                         <IconButton
                             size="large"
@@ -90,19 +93,22 @@ export default function Navbar({ avatar }: NavbarProps) {
                             onClose={handleCloseNavMenu}
                             sx={{ display: { xs: 'block', md: 'none' } }}
                         >
-                            {pages.map((page) => (
-                                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                                    <Typography sx={{ textAlign: 'center' }}>{page}</Typography>
+                            {/* Mobile-Menüpunkte werden aus navigationItems gemappt */}
+                            {navigationItems.map((item) => (
+                                <MenuItem key={item.label} onClick={handleCloseNavMenu} component="a" href={item.url}>
+                                    <Typography sx={{ textAlign: 'center' }}>{item.label}</Typography>
                                 </MenuItem>
                             ))}
                         </Menu>
                     </Box>
+                    
+                    {/* LOGO - Mobile Ansicht */}
                     <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
                     <Typography
                         variant="h5"
                         noWrap
                         component="a"
-                        href="#app-bar-with-responsive-menu"
+                        href="/"
                         sx={{
                             mr: 2,
                             display: { xs: 'flex', md: 'none' },
@@ -116,21 +122,31 @@ export default function Navbar({ avatar }: NavbarProps) {
                     >
                         LOGO
                     </Typography>
-                    <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-                        {pages.map((page) => (
+
+                    {/* Navigationsleiste - Desktop Ansicht */}
+                    <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+                        {navigationItems.map((item) => (
                             <Button
-                                key={page}
-                                onClick={handleCloseNavMenu}
-                                sx={{ my: 2, color: 'white', display: 'block' }}
+                                key={item.label}
+                                component="a"
+                                href={item.url}
+                                sx={{
+                                    my: 2,
+                                    color: "black",
+                                    display: "block",
+                                    textDecoration: "none"
+                                }}
                             >
-                                {page}
+                                {item.label}
                             </Button>
                         ))}
                     </Box>
+
+                    {/* Benutzermenü */}
                     <Box sx={{ flexGrow: 0 }}>
                         <Tooltip title="Open settings">
                             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                {avatar} {/* Hier wird der von oben weitergegebene Avatar gerendert */}
+                                {avatar}
                             </IconButton>
                         </Tooltip>
                         <Menu
@@ -149,9 +165,10 @@ export default function Navbar({ avatar }: NavbarProps) {
                             open={Boolean(anchorElUser)}
                             onClose={handleCloseUserMenu}
                         >
-                            {settings.map((setting) => (
-                                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                                    <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
+                            {/* Das Benutzermenü zeigt jetzt dynamisch die Menüpunkte an */}
+                            {userMenuItems.map((item) => (
+                                <MenuItem key={item.label} onClick={handleCloseUserMenu} component="a" href={item.url}>
+                                    <Typography sx={{ textAlign: 'center' }}>{item.label}</Typography>
                                 </MenuItem>
                             ))}
                         </Menu>

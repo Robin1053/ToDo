@@ -21,6 +21,8 @@ import {
 } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+
 
 
 export default function SignUp() {
@@ -74,17 +76,9 @@ export default function SignUp() {
                 }
               />
             </FormControl>
-            <Box sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              width: 300, // Stellen Sie sicher, dass die Breite für die korrekte Ausrichtung festgelegt ist
-            }}>
-              <FormControlLabel control={<Checkbox name='rememberMe' />} label="Stay logged in" />
-              <Typography>
-                <a href="/auth/ForgotPasword">Forgot Password</a>
-              </Typography>
-            </Box>
+
+            <DatePicker label="Birthday" sx={{ width: 300 }} />
+
 
             {/* Container für die Buttons, um sie nebeneinander zu platzieren */}
             <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, width: 300 }}>
@@ -96,12 +90,12 @@ export default function SignUp() {
                   width: '100%', // Füllt die gesamte Breite des Containers aus
                 },
               }}>
-                Sign In
+                Sign Up
               </Button>
               <Button
                 variant="outlined"
                 color="secondary"
-                type='submit'
+                href='/auth/signin'
                 sx={{
                   flexGrow: 1,
                   minHeight: '48px', // Mindesthöhe beibehalten
@@ -109,20 +103,20 @@ export default function SignUp() {
                     width: '100%',
                   },
                 }}>
-                Sign Up
+                Sign In
               </Button>
             </Box>
           </Box>
-          <Divider sx={{ my: 3, width: 300 }}>Or Sign In with</Divider>
+          <Divider sx={{ my: 3, width: 300 }}>Or Sign Up with</Divider>
           <div
             className="g_id_signin"
             data-type="standard"
             data-shape="pill"
             data-theme="outline"
-            data-text="signin_with"
+            data-text="signup_with"
             data-size="large"
             data-logo_alignment="left"
-            data-width="380">
+            data-width="280">
           </div>
         </CardContent>
       </Card >

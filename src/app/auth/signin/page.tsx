@@ -101,10 +101,10 @@ export default function SignIn() {
               <Button
                 variant="outlined"
                 color="secondary"
-                type='submit'
+                href='/auth/signup'
                 sx={{
                   flexGrow: 1,
-                  minHeight: '48px', // Mindesthöhe beibehalten
+                  minHeight: '48px',
                   '@media (max-width: 600px)': {
                     width: '100%',
                   },

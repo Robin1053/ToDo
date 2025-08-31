@@ -2,7 +2,6 @@
 
 
 import type { Metadata } from "next";
-import { Roboto, Sour_Gummy, Pacifico } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/NavMenu/Navbar";
 import { NavAvatar } from "@/components/NavMenu/Avatar";
@@ -10,16 +9,6 @@ import Providers from "@/components/Providers"; // Import the new Providers comp
 import React from 'react';
 import ThemeRegistry from '@/theme/Registry';
 
-
-const geistSans = Roboto({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Sour_Gummy({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -33,7 +22,7 @@ function handleCredentialResponse(response: CredentialResponse) {
   console.log("Encoded JWT ID token: " + response.credential);
 
   // Senden der Daten an Ihren API-Endpunkt
-  fetch("https://turbo-space-parakeet-x5w5wq96jv7q36v7q-3000.app.github.dev/api/auth/callback/google", {
+  fetch("http://localhost:3000/api/auth/callback/google", {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -71,7 +60,7 @@ export default function RootLayout({
               data-client_id={process.env.GOOGLE_CLIENT_ID}
               data-context="signin"
               data-ux_mode="redirect"
-              data-login_uri={process.env.GOOGLE_LOGIN_URI || "https://turbo-space-parakeet-x5w5wq96jv7q36v7q-3000.app.github.dev/api/auth/google"}
+              data-login_uri={process.env.GOOGLE_LOGIN_URI || "http://localhost:3000/api/auth/google"}
               data-callback="handleCredentialResponse" // Hier der Funktionsname
               data-itp_support="true" />
             {children}
