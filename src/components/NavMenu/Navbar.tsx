@@ -1,3 +1,5 @@
+"use client"
+
 import * as React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -7,43 +9,37 @@ import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
-import { auth } from "@/lib/auth"
-import { headers } from "next/headers"
-import 
 
 
-
-const pages = ['Products', 'Pricing', 'Blog'];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
-
-const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
-const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
-
-const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElNav(event.currentTarget);
-};
-const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElUser(event.currentTarget);
-};
-const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
-};
-const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
-};
-export default function Navbar() {
-
-    const session = await auth.api.getSession({
-        headers: await headers()
-    })
+type NavbarProps = {
+    avatar: React.ReactNode;
+}
 
 
+export default function Navbar({ avatar }: NavbarProps) {
 
+    const pages = ['Products', 'Pricing', 'Blog'];
+    const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+
+    const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
+    const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+
+    const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorElNav(event.currentTarget);
+    };
+    const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorElUser(event.currentTarget);
+    };
+    const handleCloseNavMenu = () => {
+        setAnchorElNav(null);
+    };
+    const handleCloseUserMenu = () => {
+        setAnchorElUser(null);
+    };
     return (
         <AppBar position="static" color="primary">
             <Container maxWidth="xl">
@@ -134,7 +130,7 @@ export default function Navbar() {
                     <Box sx={{ flexGrow: 0 }}>
                         <Tooltip title="Open settings">
                             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                <Avatar alt="Remy Sharp" src={session?.user.image || "/blank-profile-picture.svg"} />
+                                {avatar} {/* Hier wird der von oben weitergegebene Avatar gerendert */}
                             </IconButton>
                         </Tooltip>
                         <Menu

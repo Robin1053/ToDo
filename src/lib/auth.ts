@@ -6,7 +6,7 @@ import { nextCookies } from "better-auth/next-js";
 
 
 export const auth = betterAuth({
-  database: new Database("./src/lib/database.sqlite"),
+    database: new Database("./src/lib/sqlite.db"),
 
   emailAndPassword: {
     enabled: true,

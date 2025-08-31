@@ -1,190 +1,131 @@
+// src/components/NavMenu/SignIn.tsx
+"use client";
+
 import * as React from 'react';
 import {
-  Button,
-  FormControl,
-  Checkbox,
-  FormControlLabel,
-  InputLabel,
-  OutlinedInput,
-  TextField,
-  InputAdornment,
-  Link,
-  Alert,
+  Typography,
+  CardContent,
+  Card,
+  CardHeader,
   IconButton,
+  TextField,
+  FormControl,
+  InputLabel,
+  Input,
+  InputAdornment,
+  Checkbox,
+  Button,
+  FormControlLabel,
+  Divider,
+  Box, // Importiert, um die Buttons zu gruppieren
 } from '@mui/material';
-import AccountCircle from '@mui/icons-material/AccountCircle';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { AppProvider } from '@toolpad/core/AppProvider';
-import { SignInPage } from '@toolpad/core/SignInPage';
-import { useTheme } from '@mui/material/styles';
 
-const providers = [{ id: 'credentials', name: 'Email and Password' }];
 
-function CustomEmailField() {
-  return (
-    <TextField
-      id="input-with-icon-textfield"
-      label="Email"
-      name="email"
-      type="email"
-      size="small"
-      required
-      fullWidth
-      slotProps={{
-        input: {
-          startAdornment: (
-            <InputAdornment position="start">
-              <AccountCircle fontSize="inherit" />
-            </InputAdornment>
-          ),
-        },
-      }}
-      variant="outlined"
-    />
-  );
-}
-
-function CustomPasswordField() {
+export default function SignUp() {
   const [showPassword, setShowPassword] = React.useState(false);
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
-
-  const handleMouseDownPassword = (event: React.MouseEvent) => {
+  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+  };
+  const handleMouseUpPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
   };
 
   return (
-    <FormControl sx={{ my: 2 }} fullWidth variant="outlined">
-      <InputLabel size="small" htmlFor="outlined-adornment-password">
-        Password
-      </InputLabel>
-      <OutlinedInput
-        id="outlined-adornment-password"
-        type={showPassword ? 'text' : 'password'}
-        name="password"
-        size="small"
-        endAdornment={
-          <InputAdornment position="end">
-            <IconButton
-              aria-label="toggle password visibility"
-              onClick={handleClickShowPassword}
-              onMouseDown={handleMouseDownPassword}
-              edge="end"
-              size="small"
-            >
-              {showPassword ? (
-                <VisibilityOff fontSize="inherit" />
-              ) : (
-                <Visibility fontSize="inherit" />
-              )}
-            </IconButton>
-          </InputAdornment>
-        }
-        label="Password"
-      />
-    </FormControl>
-  );
-}
-
-function CustomButton() {
-  return (
-    <Button
-      type="submit"
-      variant="outlined"
-      color="info"
-      size="small"
-      disableElevation
-      fullWidth
-      sx={{ my: 2 }}
-    >
-      Log In
-    </Button>
-  );
-}
-
-function SignUpLink() {
-  return (
-    <Link href="/" variant="body2">
-      Sign up
-    </Link>
-  );
-}
-
-function ForgotPasswordLink() {
-  return (
-    <Link href="/" variant="body2">
-      Forgot password?
-    </Link>
-  );
-}
-
-function Title() {
-  return <h2 style={{ marginBottom: 8 }}>Login</h2>;
-}
-
-function Subtitle() {
-  return (
-    <Alert sx={{ mb: 2, px: 1, py: 0.25, width: '100%' }} severity="warning">
-      We are investigating an ongoing outage.
-    </Alert>
-  );
-}
-
-function RememberMeCheckbox() {
-  const theme = useTheme();
-  return (
-    <FormControlLabel
-      label="Remember me"
-      control={
-        <Checkbox
-          name="remember"
-          value="true"
-          color="primary"
-          sx={{ padding: 0.5, '& .MuiSvgIcon-root': { fontSize: 20 } }}
+    <>
+      <Card sx={{ maxWidth: 440, mx: 'auto', mt: 8, display: 'flex', flexDirection: 'column' }}>
+        <CardHeader
+          title="Please Sign In"
         />
-      }
-      slotProps={{
-        typography: {
-          color: 'textSecondary',
-          fontSize: theme.typography.pxToRem(14),
-        },
-      }}
-    />
-  );
-}
+        <CardContent sx={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          {/* Formular-Container, um die Elemente vertikal zu stapeln */}
+          <Box
+            component="form"
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: 2, // Abstand zwischen den Formular-Elementen
+            }}
+            method='post'
+            action='/sign-in/email'
+          >
+            <TextField style={{ width: 300 }} id="email" label="Max@Musterman.de" variant="standard" name='email' required />
 
-export default function SlotsSignIn() {
-  const theme = useTheme();
-  return (
-    <AppProvider theme={theme}>
-      <SignInPage
-        signIn={(provider, formData) =>
-          alert(
-            `Logging in with "${provider.name}" and credentials: ${formData.get('email')}, ${formData.get('password')}, and checkbox value: ${formData.get('remember')}`,
-          )
-        }
-        slots={{
-          title: Title,
-          subtitle: Subtitle,
-          emailField: CustomEmailField,
-          passwordField: CustomPasswordField,
-          submitButton: CustomButton,
-          signUpLink: SignUpLink,
-          rememberMe: RememberMeCheckbox,
-          forgotPasswordLink: ForgotPasswordLink,
-        }}
-        slotProps={{ form: { noValidate: true } }}
-        providers={providers}
-      />
-    </AppProvider>
+            <FormControl sx={{ width: 300 }} variant="standard">
+              <InputLabel htmlFor="standard-adornment-password">Password</InputLabel>
+              <Input
+                id="standard-adornment-password"
+                type={showPassword ? 'text' : 'password'}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label={showPassword ? 'hide password' : 'display password'}
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      onMouseUp={handleMouseUpPassword}
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                }
+              />
+            </FormControl>
+            <Box sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              width: 300, // Stellen Sie sicher, dass die Breite für die korrekte Ausrichtung festgelegt ist
+            }}>
+              <FormControlLabel control={<Checkbox name='rememberMe' />} label="Stay logged in" />
+              <Typography>
+                <a href="/auth/ForgotPasword">Forgot Password</a>
+              </Typography>
+            </Box>
+
+            {/* Container für die Buttons, um sie nebeneinander zu platzieren */}
+            <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, width: 300 }}>
+              <Button variant="contained" color="primary" type='submit' sx={{
+                flexGrow: 1,
+                minHeight: '48px', // Mindesthöhe für bessere Bedienbarkeit
+                // Breite des Buttons auf mobilen Geräten anpassen
+                '@media (max-width: 600px)': {
+                  width: '100%', // Füllt die gesamte Breite des Containers aus
+                },
+              }}>
+                Sign In
+              </Button>
+              <Button
+                variant="outlined"
+                color="secondary"
+                type='submit'
+                sx={{
+                  flexGrow: 1,
+                  minHeight: '48px', // Mindesthöhe beibehalten
+                  '@media (max-width: 600px)': {
+                    width: '100%',
+                  },
+                }}>
+                Sign Up
+              </Button>
+            </Box>
+          </Box>
+          <Divider sx={{ my: 3, width: 300 }}>Or Sign In with</Divider>
+          <div
+            className="g_id_signin"
+            data-type="standard"
+            data-shape="pill"
+            data-theme="outline"
+            data-text="signin_with"
+            data-size="large"
+            data-logo_alignment="left"
+            data-width="380">
+          </div>
+        </CardContent>
+      </Card >
+    </>
   );
-}
-async function convertImageToBase64(file: File): Promise<string> {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result as string);
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
-    });
 }
