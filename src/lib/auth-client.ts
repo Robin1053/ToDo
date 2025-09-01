@@ -19,11 +19,11 @@ export const authClient = createAuthClient({
       // Optional client configuration:
       autoSelect: true,
       cancelOnTapOutside: true,
-      context: "signin",
+      context: "use",
       additionalOptions: {},
       promptOptions: {
-        baseDelay: 1000, // Base delay in ms (default: 1000)
-        maxAttempts: 5, // Maximum number of attempts before triggering onPromptNotification (default: 5)
+        baseDelay: 20,
+        maxAttempts: 5,
       },
     }),
   ],

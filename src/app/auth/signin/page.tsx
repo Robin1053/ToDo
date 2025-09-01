@@ -1,7 +1,7 @@
-// src/components/NavMenu/SignIn.tsx
 "use client";
 
 import * as React from 'react';
+import { useEffect, useState } from 'react';
 import {
   Typography,
   CardContent,
@@ -17,14 +17,73 @@ import {
   Button,
   FormControlLabel,
   Divider,
-  Box, // Importiert, um die Buttons zu gruppieren
+  Box,
+  Alert
 } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import KeyIcon from '@mui/icons-material/Key';
+import { authClient } from '@/lib/auth-client';
+import AlertTitle from '@mui/material/AlertTitle';
 
+
+// Korrigierte globale Deklaration für die Google Identity Services API
+declare global {
+  interface Window {
+    handleCredentialResponse: (response: CredentialResponse) => void;
+    google: {
+      accounts: {
+        id: {
+          initialize: (config: any) => void;
+          renderButton: (element: HTMLElement | null, config: any) => void;
+          prompt: (callback?: ((notification: any) => void) | undefined) => void;
+        };
+      };
+    };
+  }
+}
 
 export default function SignIn() {
-  const [showPassword, setShowPassword] = React.useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+
+  // Handler-Funktion für die Anmeldedaten
+  const handleCredentialResponse = (response: any) => {
+    // Hier können Sie das JWT-Token an Ihr Backend senden
+    console.log("Encoded JWT ID token: " + response.credential);
+  };
+
+  useEffect(() => {
+    if (typeof window.google !== 'undefined') {
+      window.handleCredentialResponse = handleCredentialResponse;
+
+      // Initialisieren der Google-Anmeldung
+      window.google.accounts.id.initialize({
+        client_id: process.env.GOOGLE_CLIENT_ID,
+        callback: window.handleCredentialResponse,
+      });
+
+      // Rendern des Anmeldebuttons
+      const googleButton = document.getElementById("google-signin-button");
+      if (googleButton) {
+        window.google.accounts.id.renderButton(
+          googleButton,
+          {
+            theme: "outline",
+            size: "large",
+            type: "standard",
+            shape: "pill",
+            text: "signin_with",
+            logo_alignment: "left",
+            width: 302,
+          }
+        );
+      }
+
+      // Zeigen Sie das One-Tap-Pop-up
+      window.google.accounts.id.prompt();
+    }
+  }, [handleCredentialResponse]);
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
   const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -34,36 +93,99 @@ export default function SignIn() {
     event.preventDefault();
   };
 
+  const handleEmailSignIn = async (event: React.FormEvent) => {
+    const emailInput = document.getElementById('email') as HTMLInputElement;
+    const email = emailInput ? emailInput.value : '';
+
+    const passwordImput = document.getElementById('password') as HTMLInputElement;
+    const password = passwordImput ? passwordImput.value : '';
+
+    const rememberMeImput = document.getElementById('rememberMe') as HTMLInputElement;
+    const rememberMe = rememberMeImput ? rememberMeImput.checked : '';
+    event.preventDefault();
+    // Ihre E-Mail-Anmelde-Logik hier
+    console.log("E-Mail-Anmeldung wurde geklickt.");
+    const { data, error } = await authClient.signIn.email({
+      email: email, // required
+      password: password, // required
+      rememberMe: rememberMe as boolean,
+      callbackURL: "/",
+    });
+
+  };
+
+  const handlePasskeySignIn = async (event: React.MouseEvent) => {
+    event.preventDefault();
+    console.log("Passkey-Anmeldung wurde geklickt.");
+
+    const emailInput = document.getElementById('email') as HTMLInputElement;
+    const email = emailInput ? emailInput.value : '';
+
+    if (!email) {
+      console.error("E-Mail-Adresse fehlt.");
+      setErrorMessage("E-Mail is missing")
+      return;
+    }
+
+    try {
+      const { data, error } = await authClient.signIn.passkey({
+        email: email,
+        autoFill: true,
+      });
+      console.log(`Versuche, mit Passkey für E-Mail ${email} anzumelden...`);
+
+      if (error) {
+        console.error("Fehler bei der Passkey-Anmeldung:", error);
+        setErrorMessage("Fehler bei der Passkey-Anmeldung" + error.message)
+      } else {
+        console.log("Passkey-Anmeldung erfolgreich!", data);
+      }
+
+    } catch (err) {
+      setErrorMessage("Unerwarteter Fehler bei der Passkey-Anmeldung.");
+      console.error("Unerwarteter Fehler bei der Passkey-Anmeldung:", err);
+    }
+  };
+
   return (
     <>
       <Card sx={{ maxWidth: 440, mx: 'auto', mt: 8, display: 'flex', flexDirection: 'column' }}>
         <CardHeader
-          title="Please Sign In"
+          title="Bitte melden Sie sich an"
         />
         <CardContent sx={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          {/* Formular-Container, um die Elemente vertikal zu stapeln */}
+          {errorMessage && (
+            <Alert
+              severity="error"
+              sx={{
+                width: 300,
+                minHeight: 48,
+                mb: 2, // Abstand nach unten hinzufügen
+              }}>
+              {errorMessage}
+            </Alert>
+          )}
           <Box
             component="form"
+            onSubmit={handleEmailSignIn}
             sx={{
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
-              gap: 2, // Abstand zwischen den Formular-Elementen
+              gap: 2,
+              width: 300
             }}
-            method='post'
-            action='/sign-in/email'
           >
-            <TextField style={{ width: 300 }} id="email" label="Max@Musterman.de" variant="standard" name='email' required />
-
-            <FormControl sx={{ width: 300 }} variant="standard">
-              <InputLabel htmlFor="standard-adornment-password">Password</InputLabel>
+            <TextField fullWidth id="email" label="Max@Musterman.de" variant="standard" name='email' required />
+            <FormControl fullWidth variant="standard">
+              <InputLabel htmlFor="password">Passwort</InputLabel>
               <Input
-                id="standard-adornment-password"
+                id="password"
                 type={showPassword ? 'text' : 'password'}
                 endAdornment={
                   <InputAdornment position="end">
                     <IconButton
-                      aria-label={showPassword ? 'hide password' : 'display password'}
+                      aria-label={showPassword ? 'Passwort ausblenden' : 'Passwort anzeigen'}
                       onClick={handleClickShowPassword}
                       onMouseDown={handleMouseDownPassword}
                       onMouseUp={handleMouseUpPassword}
@@ -78,25 +200,20 @@ export default function SignIn() {
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
-              width: 300, // Stellen Sie sicher, dass die Breite für die korrekte Ausrichtung festgelegt ist
+              width: '100%',
             }}>
-              <FormControlLabel control={<Checkbox name='rememberMe' />} label="Stay logged in" />
-              <Typography>
-                <a href="/auth/ForgotPasword">Forgot Password</a>
+              <FormControlLabel control={<Checkbox id='rememberMe'name='rememberMe' />} label="Angemeldet bleiben" />
+              <Typography variant="body2">
+                <a href="/auth/forgotpassword">Passwort vergessen</a>
               </Typography>
             </Box>
 
-            {/* Container für die Buttons, um sie nebeneinander zu platzieren */}
-            <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, width: 300 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, width: '100%' }}>
               <Button variant="contained" color="primary" type='submit' sx={{
                 flexGrow: 1,
-                minHeight: '48px', // Mindesthöhe für bessere Bedienbarkeit
-                // Breite des Buttons auf mobilen Geräten anpassen
-                '@media (max-width: 600px)': {
-                  width: '100%', // Füllt die gesamte Breite des Containers aus
-                },
+                minHeight: '48px',
               }}>
-                Sign In
+                Anmelden
               </Button>
               <Button
                 variant="outlined"
@@ -105,25 +222,43 @@ export default function SignIn() {
                 sx={{
                   flexGrow: 1,
                   minHeight: '48px',
-                  '@media (max-width: 600px)': {
-                    width: '100%',
-                  },
                 }}>
-                Sign Up
+                Registrieren
               </Button>
             </Box>
           </Box>
-          <Divider sx={{ my: 3, width: 300 }}>Or Sign In with</Divider>
-          <div
-            className="g_id_signin"
-            data-type="standard"
-            data-shape="pill"
-            data-theme="outline"
-            data-text="signin_with"
-            data-size="large"
-            data-logo_alignment="left"
-            data-width="380">
-          </div>
+          <Divider sx={{ my: 3, width: 300 }}>Oder melden Sie sich an mit</Divider>
+          <Box
+            sx={
+              {
+                gap: 2,
+                display: 'flex',
+                justifyContent: 'center',
+                flexWrap: 'wrap'
+              }
+            }>
+
+
+            <div
+              id="google-signin-button"
+              style={{
+                minHeight: 48
+              }}>
+
+            </div>
+
+            <Button
+              variant='outlined'
+              onClick={handlePasskeySignIn}
+              startIcon={<KeyIcon />}
+              sx={{
+                width: 300,
+                minHeight: 48
+              }}
+            >
+              Oder mit Passkey anmelden
+            </Button>
+          </Box>
         </CardContent>
       </Card >
     </>
