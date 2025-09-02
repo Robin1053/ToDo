@@ -18,36 +18,80 @@ import {
   FormControlLabel,
   Divider,
   Box,
-  Alert
+  Alert,
+  LinearProgress
 } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import KeyIcon from '@mui/icons-material/Key';
 import { authClient } from '@/lib/auth-client';
-import AlertTitle from '@mui/material/AlertTitle';
+import { jwtDecode } from "jwt-decode";
+
 
 
 export default function SignIn() {
+
+  console.log("Client ID geladen:", process.env.GOOGLE_CLIENT_ID);
+  const [clientId, setClientId] = useState(null);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-
-
-  // Zustände für E-Mail, Passwort und "Angemeldet bleiben"
-  const emailInput = document.getElementById('email') as HTMLInputElement;
-  const email = emailInput ? emailInput.value : '';
-
-  const passwordImput = document.getElementById('password') as HTMLInputElement;
-  const password = passwordImput ? passwordImput.value : '';
-
-  const rememberMeImput = document.getElementById('rememberMe') as HTMLInputElement;
-  const rememberMe = rememberMeImput ? rememberMeImput.checked : '';
-  // Handler-Funktion für die Anmeldedaten
-  const handleCredentialResponse = (response: any) => {
-    // Hier können Sie das JWT-Token an Ihr Backend senden
-    console.log("Encoded JWT ID token: " + response.credential);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+  };
+  const handleMouseUpPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
   };
 
+
   useEffect(() => {
+    const handleCredentialResponse = async (response: any) => {
+      const [Google_ID_Token] = response.credential.token();
+      console.log("Encoded JWT ID token: " + response.credential);
+
+      if (response.credential) {
+        setLoading(true);
+        console.log("Erfolgreich einloggt! Sende Token an Backend...");
+
+        try {
+          // Send the token to your backend API for verification and sign-in
+          const apiResponse = await fetch("/api/auth/google", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ token: response.credential }),
+          });
+          if (apiResponse.ok) {
+            // Assuming your backend returns user data upon successful login
+            const userData = await apiResponse.json();
+            setUser(userData);
+            console.log("Backend-Anmeldung erfolgreich!", userData);
+          } else {
+            console.error("Backend-Anmeldung fehlgeschlagen:", apiResponse.statusText);
+            setUser(null);
+          }
+
+        } catch (error) {
+          console.error("Fehler beim Senden des Tokens an das Backend:", error);
+          setUser(null);
+        } finally {
+          setLoading(false);
+        }
+
+      } else {
+        console.error("Anmeldung fehlgeschlagen: Kein Token erhalten.");
+        setUser(null);
+      }
+    };
+
     if (typeof window.google !== 'undefined') {
       window.handleCredentialResponse = handleCredentialResponse;
 
@@ -60,7 +104,7 @@ export default function SignIn() {
       // Rendern des Anmeldebuttons
       const googleButton = document.getElementById("google-signin-button");
       if (googleButton) {
-        window.google.accounts.id.renderButton as renderButton; (
+        window.google.accounts.id.renderButton(
           googleButton,
           {
             theme: "outline",
@@ -76,19 +120,9 @@ export default function SignIn() {
 
       // Zeigen Sie das One-Tap-Pop-up
       window.google.accounts.id.prompt();
-      {
-        client_id: process.env.GOOGLE_CLIENT_ID
-      };
     }
-  }, [handleCredentialResponse]);
-
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
-  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-  };
-  const handleMouseUpPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-  };
+  },
+  );
 
   const handleEmailSignIn = async (event: React.FormEvent) => {
 
@@ -202,6 +236,8 @@ export default function SignIn() {
               label="Max@Musterman.de"
               variant="standard"
               name='email'
+              value={email}
+              onChange={(e) => setEmail(e.target.value)} // onChange-Handler hinzugefügt
               required />
             <FormControl
               fullWidth
@@ -210,8 +246,10 @@ export default function SignIn() {
                 htmlFor="password"
               >Passwort</InputLabel>
               <Input
+                value={password}
                 id="password"
                 type={showPassword ? 'text' : 'password'}
+                onChange={(e) => setPassword(e.target.value)} // onChange-Handler hinzugefügt
                 endAdornment={
                   <InputAdornment
                     position="end">
@@ -239,11 +277,20 @@ export default function SignIn() {
                 control={
                   <Checkbox
                     id='rememberMe'
-                    name='rememberMe' />
+                    name='rememberMe'
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)} // onChange-Handler hinzugefügt
+                  />
                 }
                 label="Angemeldet bleiben" />
               <Typography
-                variant="body2">
+                variant="body2"
+                sx={
+                  {
+                    color: 'secondary',
+                    textDecoration: 'underline dotted'
+                  }
+                }>
                 <a href="/auth/forgotpassword">Passwort vergessen</a>
               </Typography>
             </Box>
@@ -282,13 +329,28 @@ export default function SignIn() {
               </Button>
             </Box>
           </Box>
-          <Divider
-            sx={
-              {
-                my: 3,
-                width: 300
+          {loading && (
+            <LinearProgress
+              style={
+                {
+                  width: 300,
+                  marginTop: 3,
+                  marginBottom: 3
+                }
               }
-            }>Oder melden Sie sich an mit</Divider>
+            />
+
+          )}
+          {!loading && (
+            <Divider
+              sx={
+                {
+                  my: 3,
+                  width: 300
+                }
+              }>Oder melden Sie sich an mit
+            </Divider>
+          )}
           <Box
             sx={
               {

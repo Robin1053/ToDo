@@ -1,5 +1,5 @@
 // src/types/globals.d.ts
-export { };
+export {};
 
 declare global {
   interface CredentialResponse {
@@ -14,11 +14,18 @@ declare global {
         id: {
           initialize: (config: any) => void;
           renderButton: (element: HTMLElement | null, config: any) => void;
-          prompt: (callback?: ((notification: any) => void) | undefined) => void;
+          prompt: (
+            callback?: ((notification: any) => void) | undefined
+          ) => void;
         };
       };
     };
   }
+  interface CredentialResponse {
+    initialize: (config: any) => void;
+    prompt: (callback?: ((notification: any) => void) | undefined) => void;
+  }
+
   interface renderButton {
     initialize: (config: any) => void;
     prompt: (callback?: ((notification: any) => void) | undefined) => void;

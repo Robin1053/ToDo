@@ -16,7 +16,6 @@ export const authClient = createAuthClient({
     passkeyClient(),
     oneTapClient({
       clientId: process.env.GOOGLE_CLIENT_ID as string,
-      // Optional client configuration:
       autoSelect: true,
       cancelOnTapOutside: true,
       context: "use",
