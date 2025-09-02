@@ -1,5 +1,5 @@
 // src/types/globals.d.ts
-export {};
+export { };
 
 declare global {
   interface CredentialResponse {
@@ -9,5 +9,18 @@ declare global {
 
   interface Window {
     handleCredentialResponse: (response: CredentialResponse) => void;
+    google: {
+      accounts: {
+        id: {
+          initialize: (config: any) => void;
+          renderButton: (element: HTMLElement | null, config: any) => void;
+          prompt: (callback?: ((notification: any) => void) | undefined) => void;
+        };
+      };
+    };
+  }
+  interface renderButton {
+    initialize: (config: any) => void;
+    prompt: (callback?: ((notification: any) => void) | undefined) => void;
   }
 }
