@@ -9,7 +9,7 @@ export const authClient = createAuthClient({
       prompt: "select_account",
       clientId: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-      scopes: ["https://www.googleapis.com/auth/user.birthday.read"],
+      scopes: ["https://www.googleapis.com/auth/user.birthday.read", "profile", "email"],
     },
   },
   plugins: [
@@ -29,3 +29,6 @@ export const authClient = createAuthClient({
 });
 
 export const { signIn, signOut, signUp, useSession } = authClient;
+
+
+

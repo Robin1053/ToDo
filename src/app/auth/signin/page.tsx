@@ -25,18 +25,16 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import KeyIcon from '@mui/icons-material/Key';
 import { authClient } from '@/lib/auth-client';
-import { jwtDecode } from "jwt-decode";
+import Image from 'next/image';
+
+const { data: session } = await authClient.getSession()
 
 
 
 export default function SignIn() {
 
   console.log("Client ID geladen:", process.env.GOOGLE_CLIENT_ID);
-  const [clientId, setClientId] = useState(null);
-  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
-
-
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [email, setEmail] = useState('');
@@ -52,8 +50,8 @@ export default function SignIn() {
 
 
   useEffect(() => {
-    const handleCredentialResponse = async (response: any) => {
-      const [Google_ID_Token] = response.credential.token();
+    const handleCredentialResponse = async (response: CredentialResponse) => {
+      // You probably want to use response.credential directly, not response.credential.token()
       console.log("Encoded JWT ID token: " + response.credential);
 
       if (response.credential) {
@@ -62,43 +60,27 @@ export default function SignIn() {
 
         try {
           // Send the token to your backend API for verification and sign-in
-          const apiResponse = await fetch("/api/auth/google", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ token: response.credential }),
-          });
-          if (apiResponse.ok) {
-            // Assuming your backend returns user data upon successful login
-            const userData = await apiResponse.json();
-            setUser(userData);
-            console.log("Backend-Anmeldung erfolgreich!", userData);
-          } else {
-            console.error("Backend-Anmeldung fehlgeschlagen:", apiResponse.statusText);
-            setUser(null);
-          }
-
-        } catch (error) {
-          console.error("Fehler beim Senden des Tokens an das Backend:", error);
-          setUser(null);
+          const apiResponse  = await authClient.signIn.social({
+            provider: "google",
+            idToken: {
+              token: response.credential,
+            }
+          })
+            ;
         } finally {
           setLoading(false);
         }
-
-      } else {
-        console.error("Anmeldung fehlgeschlagen: Kein Token erhalten.");
-        setUser(null);
       }
     };
 
-    if (typeof window.google !== 'undefined') {
-      window.handleCredentialResponse = handleCredentialResponse;
+    if (typeof window !== 'undefined' && typeof window.google !== 'undefined') {
+      // Attach handler to window so Google can call it
+      (window).handleCredentialResponse = handleCredentialResponse;
 
       // Initialisieren der Google-Anmeldung
       window.google.accounts.id.initialize({
         client_id: process.env.GOOGLE_CLIENT_ID,
-        callback: window.handleCredentialResponse,
+        callback: (window).handleCredentialResponse,
       });
 
       // Rendern des Anmeldebuttons
@@ -121,8 +103,7 @@ export default function SignIn() {
       // Zeigen Sie das One-Tap-Pop-up
       window.google.accounts.id.prompt();
     }
-  },
-  );
+  }, []);
 
   const handleEmailSignIn = async (event: React.FormEvent) => {
 
@@ -324,6 +305,7 @@ export default function SignIn() {
                     flexGrow: 1,
                     minHeight: '48px',
                   }
+
                 }>
                 Registrieren
               </Button>
@@ -388,6 +370,10 @@ export default function SignIn() {
           </Box>
         </CardContent>
       </Card >
+
+      <Typography variant="body1" color="initial">{session?.user.name}</Typography>
+
+      <Image src="https://lh3.googleusercontent.com/a/ACg8ocIJEoLGcP6g9FEip0F-jaQeVkjk37_KD6oBD-C86AH0egxTUA=s96-c" alt="test" width={64} height={64}/>
     </>
   )
 }
