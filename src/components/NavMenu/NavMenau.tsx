@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import { authClient } from "@/lib/auth-client"
 import { navigationItems, HeaderMenuItemsSession, MenuItemsNoSession } from "@/config/navigation";
 import { useMenuHandlers } from "@/hooks/useMenuHandlers";

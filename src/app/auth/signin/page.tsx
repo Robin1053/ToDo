@@ -25,7 +25,6 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import KeyIcon from '@mui/icons-material/Key';
 import { authClient } from '@/lib/auth-client';
-import Image from 'next/image';
 
 const { data: session } = await authClient.getSession()
 
@@ -370,10 +369,6 @@ export default function SignIn() {
           </Box>
         </CardContent>
       </Card >
-
-      <Typography variant="body1" color="initial">{session?.user.name}</Typography>
-
-      <Image src="https://lh3.googleusercontent.com/a/ACg8ocIJEoLGcP6g9FEip0F-jaQeVkjk37_KD6oBD-C86AH0egxTUA=s96-c" alt="test" width={64} height={64}/>
     </>
   )
 }
