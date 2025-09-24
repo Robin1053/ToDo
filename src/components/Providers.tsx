@@ -1,22 +1,31 @@
-// src/components/Providers.tsx
 'use client';
-import * as React from 'react';
-import { ThemeProvider } from '@mui/material/styles';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import CssBaseline from '@mui/material/CssBaseline';
-import theme from '@/theme/theme';
-import ThemeRegistry from '@/theme/Registry';
 
+import { ThemeProvider as MuiThemeProvider, CssBaseline } from '@mui/material';
+import theme from "@/theme/theme";
+import { NextAppProvider } from "@toolpad/core/nextjs";
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import type { ReactNode } from 'react';
+import type { Session } from '@/lib/AuthClient';
 
-export default function Providers({ children }: { children: React.ReactNode }) {
+interface ProvidersProps {
+  children: ReactNode;
+  session: Session | null;
+}
+
+export function Providers({ children, session }: ProvidersProps) {
   return (
-      <ThemeRegistry options={{ key: 'mui' }}>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+
+      <NextAppProvider
+        theme={theme}
+        session={session}
+      >
+        <MuiThemeProvider theme={theme}>
           <CssBaseline />
-          {/* Your app components */}
           {children}
-        </LocalizationProvider>
-      </ThemeRegistry>
+        </MuiThemeProvider>
+      </NextAppProvider>
+    </LocalizationProvider>
   );
 }

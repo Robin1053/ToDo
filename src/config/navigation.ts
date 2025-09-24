@@ -1,33 +1,23 @@
-
 // src/config/navigation.ts
+
+// Hauptnavigation
 export const navigationItems = [
   { label: "Home", url: "/" },
   { label: "ToDo", url: "/todo" },
-  { label: "Notes", url: "/notes" }
+  { label: "Notes", url: "/notes" },
 ];
 
+// Menü für Nutzer ohne Session
 export const MenuItemsNoSession = [
   { label: "Login", url: "/auth/signin" },
   { label: "Register", url: "/auth/signup" },
-]
+];
+
+// Menü für eingeloggte Nutzer
 export const HeaderMenuItemsSession = [
-  { label: "Profile", url: "/Profile" },
-  { label: "Dashboard", url: "/auth/register" },
+  { label: "Profile", url: "/profile" },
+  { label: "Dashboard", url: "/dashboard" },
   { label: "Logout", url: "/auth/logout" },
-]
+];
 
-// Für Rückwärtskompatibilität
 export const pages = navigationItems.map(item => item.label);
-
-export const SettingsSession = [
-  "Profile", 
-  "Dashboard", 
-  "Logout"
-  // "noch zu implementieren"
-];
-
-export const SettingsNoSession = [
-  "Login", 
-  "Register"
-  // "noch zu implementieren"
-];

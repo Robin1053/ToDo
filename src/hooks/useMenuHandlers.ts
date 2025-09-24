@@ -1,4 +1,6 @@
 // src/hooks/useMenuHandlers.ts
+"use client";
+
 import { useState } from "react";
 
 export const useMenuHandlers = () => {

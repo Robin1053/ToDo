@@ -1,30 +1,9 @@
-"use client";
-
+// src/theme.ts
 import { createTheme } from "@mui/material/styles";
-import { Roboto, Pacifico, Source_Sans_3 } from "next/font/google"; // "Sour Gummy" ist kein offizieller Google Font. Ich verwende stattdessen "Source Sans 3".
 
-// Definieren Sie Ihre Fonts. Die "variable"-Eigenschaft ist optional,
-// aber nützlich, um sie einfach mit Tailwind CSS zu verwenden.
-export const fontPrimary = Roboto({
-  weight: ["400", "700"],
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-roboto",
-});
-
-export const fontSecondary = Pacifico({
-  weight: ["400"],
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-pacifico",
-});
-
-export const fontAccent = Source_Sans_3({ 
-  weight: ["400"],
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-source-sans",
-});
+const fontPrimary = "'Roboto', sans-serif";
+const fontSecondary = "'Pacifico', cursive";
+const fontAccent = "'Sour Gummy', cursive";
 
 const theme = createTheme({
   palette: {
@@ -64,25 +43,24 @@ const theme = createTheme({
     },
   },
   typography: {
-    // Korrigierte Zuweisungen für alle Fonts
-    fontFamily: fontPrimary.style.fontFamily,
+    fontFamily: fontPrimary,
     h1: {
-      fontFamily: fontSecondary.style.fontFamily,
+      fontFamily: fontSecondary,
       fontSize: "2.5rem",
       fontWeight: 400,
     },
     h2: {
-      fontFamily: fontSecondary.style.fontFamily,
+      fontFamily: fontSecondary,
       fontSize: "2rem",
       fontWeight: 400,
     },
     h3: {
-      fontFamily: fontAccent.style.fontFamily,
+      fontFamily: fontAccent,
       fontSize: "1.75rem",
       fontWeight: 500,
     },
     button: {
-      fontFamily: fontAccent.style.fontFamily,
+      fontFamily: fontAccent,
       textTransform: "none",
       fontWeight: 600,
     },
