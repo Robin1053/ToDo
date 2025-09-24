@@ -16,7 +16,7 @@ model User {
   image         String?
   createdAt     DateTime
   updatedAt     DateTime
-  birthday      DateTime?
+  Birthday      DateTime?
   sessions      Session[]
   accounts      Account[]
   passkeys      Passkey[]

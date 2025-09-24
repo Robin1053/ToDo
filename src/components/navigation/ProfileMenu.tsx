@@ -12,8 +12,8 @@ import {
 } from "@mui/material";
 import { MenuItemsNoSession, HeaderMenuItemsSession } from "@/config/navigation";
 import { useMenuHandlers } from "@/hooks/useMenuHandlers";
-import { authClient } from "@/lib/AuthClient";
-import type { Session } from "@/lib/AuthClient";
+import { authClient } from "@/lib/auth-client";
+import type { Session } from "@/lib/auth-client";
 
 export default function ProfileMenu({ session }: { session: Session | null }) {
   const { anchorElUser, handleOpenUserMenu, handleCloseUserMenu } =
