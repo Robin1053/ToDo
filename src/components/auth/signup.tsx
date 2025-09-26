@@ -22,6 +22,8 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs, { Dayjs } from 'dayjs';
 import { authClient } from '@/lib/auth-client';
 import type { Session } from '@/lib/auth-client';
+
+
 export default function SignupComponent() {
 
 
@@ -33,6 +35,8 @@ export default function SignupComponent() {
     const [showRepeatPassword, setShowRepeatPassword] = React.useState(false);
     const [password, setPassword] = React.useState("")
     const [repeatPassword, setRepeatPassword] = React.useState("")
+    const [pswrError, setPswError] = React.useState(false);
+    const [MailError, setMailError] = React.useState(false);
 
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -56,33 +60,36 @@ export default function SignupComponent() {
     const handleEmailSignUp = async (event: React.FormEvent) => {
         if (password !== repeatPassword || repeatPassword.length === 0) {
             setError("Passwords do not match");
-        }
-        event.preventDefault();
-        if (!email || !password || !name) {
-            console.error("E-Mail, Password or Name is missing.");
-            setError("E-Mail, Password or Name is missing.");
-            return;
-        }
-        try {
-            const { data, error } = await authClient.signUp.email({
-                name: name, // required
-                email: email, // required
-                password: password, // required
-                Birthday: Birthday ? Birthday.toDate() : undefined,
-
-                //image: "https://example.com/image.png",
-                //callbackURL: "https://example.com/callback",
-            });
-            console.log(`Try with ${email} and Password ${password}...`);
-            if (error) {
-                console.error("Error with the registration:", error);
-                setError("Error with the registration: " + error.message)
-            } else {
-                console.log("E-Mail registration successful!", data);
+            setPswError(true);
+        } else {
+            setError("");
+            event.preventDefault();
+            if (!email || !password || !name) {
+                console.error("E-Mail, Password or Name is missing.");
+                setError("E-Mail, Password or Name is missing.");
+                setPswError(true);
+                setMailError(true);
+                return;
             }
-        } catch (err) {
-            setError("Unexpected error during email registration.");
-            console.error("Unexpected error during email registration:", err);
+            try {
+                const { data, error } = await authClient.signUp.email({
+                    name: name, // required
+                    email: email, // required
+                    password: password, // required
+                    Birthday: Birthday ? Birthday.toDate() : undefined,
+                    callbackURL: "/",
+                });
+                console.log(`Try with ${email} and Password ${password}...`);
+                if (error) {
+                    console.error("Error with the registration:", error);
+                    setError("Error with the registration: " + error.message)
+                } else {
+                    console.log("E-Mail registration successful!", data);
+                }
+            } catch (err) {
+                setError("Unexpected error during email registration.");
+                console.error("Unexpected error during email registration:", err);
+            }
         }
     }
 
@@ -136,7 +143,6 @@ export default function SignupComponent() {
                                 sx={
                                     {
                                         width: 300,
-                                        height: 48
                                     }
                                 }
                             >{Error}
@@ -172,6 +178,8 @@ export default function SignupComponent() {
                             variant="standard"
                             name='email'
                             required
+                            error={MailError}
+                            helperText={MailError ? "Invalid E-Mail Address" : ""}
                         />
 
                         <FormControl
@@ -188,6 +196,8 @@ export default function SignupComponent() {
                                 Password
                             </InputLabel>
                             <Input
+                                error={pswrError}
+                                helperText={pswrError ? "Password is too weak" : ""}
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 name='password'
@@ -218,10 +228,12 @@ export default function SignupComponent() {
                             variant="standard"
                         >
                             <InputLabel
+                            
                                 htmlFor="standard-adornment-password">
                                 Repeat Password
                             </InputLabel>
                             <Input
+                                error={pswrError}
                                 value={repeatPassword}
                                 onChange={(e) => setRepeatPassword(e.target.value)}
                                 name='repeatPassword'

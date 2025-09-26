@@ -1,4 +1,3 @@
-
 datasource db {
   provider = "sqlite"
   url      = "file:./dev.db"
@@ -9,9 +8,9 @@ generator client {
 }
 
 model User {
-  id            String    @id
+  id            String      @id
   name          String
-  email         String
+  email         String      @unique
   emailVerified Boolean
   image         String?
   createdAt     DateTime
@@ -20,15 +19,18 @@ model User {
   sessions      Session[]
   accounts      Account[]
   passkeys      Passkey[]
+  todos         Todo[]      @relation("UserTodos")
+  sharedTodos   TodoShare[] @relation("UserSharedTodos")
+  Todo          Todo[]
+  TodoShare     TodoShare[]
 
-  @@unique([email])
   @@map("user")
 }
 
 model Session {
   id        String   @id
   expiresAt DateTime
-  token     String
+  token     String   @unique
   createdAt DateTime
   updatedAt DateTime
   ipAddress String?
@@ -36,7 +38,6 @@ model Session {
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([token])
   @@map("session")
 }
 
@@ -85,4 +86,33 @@ model Passkey {
   aaguid       String?
 
   @@map("passkey")
+}
+
+model Todo {
+  id        String  @id @default(cuid())
+  title     String
+  completed Boolean @default(false)
+
+  userId String
+  owner User @relation("UserTodos", fields: [userId], references: [id], onDelete: Cascade)
+
+  shares TodoShare[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  User      User     @relation(fields: [userId], references: [id])
+
+  @@map("todo")
+}
+
+model TodoShare {
+  id     String @id @default(cuid())
+  todoId String
+  userId String
+  role   String // z.B. "viewer", "editor", "owner"
+
+  todo Todo @relation(fields: [todoId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([todoId, userId]) // jeder User nur einmal pro Todo
 }
