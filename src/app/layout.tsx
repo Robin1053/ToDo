@@ -4,6 +4,7 @@ import * as React from "react";
 import Navigation from "@/components/navigation/navigation";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
+import { authClient } from "@/lib/auth-client";
 
 export default async function RootLayout({
   children,
@@ -15,6 +16,7 @@ export default async function RootLayout({
     headers: await headers()
   })
 
+  await authClient.oneTap();
 
   console.log("Session aus Better Auth:", session);
 
@@ -33,7 +35,6 @@ export default async function RootLayout({
           <Navigation />
           {children}
         </Providers>
-
       </body>
     </html>
   );
