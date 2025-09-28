@@ -94,7 +94,7 @@ model Todo {
   completed Boolean @default(false)
 
   userId String
-  owner User @relation("UserTodos", fields: [userId], references: [id], onDelete: Cascade)
+  owner  User   @relation("UserTodos", fields: [userId], references: [id], onDelete: Cascade)
 
   shares TodoShare[]
 
@@ -112,7 +112,8 @@ model TodoShare {
   role   String // z.B. "viewer", "editor", "owner"
 
   todo Todo @relation(fields: [todoId], references: [id], onDelete: Cascade)
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation("UserSharedTodos", fields: [userId], references: [id], onDelete: Cascade)
+  User User @relation(fields: [userId], references: [id])
 
   @@unique([todoId, userId]) // jeder User nur einmal pro Todo
 }

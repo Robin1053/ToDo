@@ -12,16 +12,14 @@ export const auth = betterAuth({
     provider: "sqlite",
   }),
 
-
   user: {
-       additionalFields: {
-          Birthday: {
-              type: "date",
-              input: true
-            } 
-        }
+    additionalFields: {
+      Birthday: {
+        type: "date",
+        input: true,
+      },
     },
-
+  },
 
   emailAndPassword: {
     enabled: true,
@@ -38,6 +36,8 @@ export const auth = betterAuth({
     passkey(),
     oneTap(), // Add the One Tap server plugin
     nextCookies(),
+    nextCookies()
   ],
 });
-type Session = typeof auth.$Infer.Session
+export type Session = typeof auth.$Infer.Session;
+export type User = typeof auth.$Infer.Session.user;

@@ -2,15 +2,18 @@ import { Container, Toolbar, AppBar, Box, Button } from "@mui/material";
 import HeaderLogo from "./HeaderLogo";
 import ProfileMenu from "./ProfileMenu";
 import { pages } from "@/config/navigation";
-import type { Session } from "@/lib/AuthClient";
+import { headers } from "next/headers";
+import { auth } from "@/lib/auth";
 
 
-export default function Navigation({ session }: { session: Session | null }) {
+export default async function Navigation() {
 
   const getPageUrl = (page: string) => {
     return page.toLowerCase() === "home" ? "/" : `/${page.toLowerCase()}`;
   };
-  
+  const session = await auth.api.getSession({
+    headers: await headers()
+  })
   return (
     <>
       <AppBar position="static" color="inherit">
@@ -37,7 +40,6 @@ export default function Navigation({ session }: { session: Session | null }) {
                 </Button>
               ))}
             </Box>
-
             {/* Profile Menu Komponente */}
             <ProfileMenu session={session} />
           </Toolbar>

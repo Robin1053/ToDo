@@ -6,8 +6,14 @@ const fontSecondary = "'Pacifico', cursive";
 const fontAccent = "'Sour Gummy', cursive";
 
 const theme = createTheme({
+  colorSchemes: {
+    dark: {
+      palette: {
+        mode: "dark",
+      },
+    },
+    light: {
   palette: {
-    mode: "light",
     primary: {
       main: "#6a93b0", // Seed-Farbe
       light: "#a1c3da",
@@ -40,6 +46,8 @@ const theme = createTheme({
     text: {
       primary: "#1a1c1e",
       secondary: "#5c5f62",
+    },
+  },
     },
   },
   typography: {

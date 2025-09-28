@@ -21,13 +21,12 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs, { Dayjs } from 'dayjs';
 import { authClient } from '@/lib/auth-client';
-import type { Session } from '@/lib/auth-client';
 
 
 export default function SignupComponent() {
 
 
-    const [Birthday, setBirthday] = React.useState<Dayjs | null>(dayjs());
+    const [Birthday, setBirthday] = React.useState<Dayjs>(dayjs() || new Date());
     const [Error, setError] = React.useState("")
     const [showPassword, setShowPassword] = React.useState(false);
     const [email, setEmail] = React.useState("")
@@ -76,7 +75,7 @@ export default function SignupComponent() {
                     name: name, // required
                     email: email, // required
                     password: password, // required
-                    Birthday: Birthday ? Birthday.toDate() : undefined,
+                    Birthday: Birthday.toDate(),
                     callbackURL: "/",
                 });
                 console.log(`Try with ${email} and Password ${password}...`);
@@ -143,6 +142,7 @@ export default function SignupComponent() {
                                 sx={
                                     {
                                         width: 300,
+                                        minHeight: 48,
                                     }
                                 }
                             >{Error}
@@ -197,7 +197,6 @@ export default function SignupComponent() {
                             </InputLabel>
                             <Input
                                 error={pswrError}
-                                helperText={pswrError ? "Password is too weak" : ""}
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 name='password'
@@ -228,7 +227,7 @@ export default function SignupComponent() {
                             variant="standard"
                         >
                             <InputLabel
-                            
+
                                 htmlFor="standard-adornment-password">
                                 Repeat Password
                             </InputLabel>
@@ -257,7 +256,7 @@ export default function SignupComponent() {
                         <DatePicker
                             disableFuture
                             value={Birthday}
-                            onChange={(newValue) => setBirthday(newValue)}
+                            onChange={(newValue) => setBirthday(newValue || dayjs())}
                             label="Birthday"
                             sx={
                                 {

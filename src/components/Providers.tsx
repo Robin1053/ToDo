@@ -6,7 +6,7 @@ import { NextAppProvider } from "@toolpad/core/nextjs";
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import type { ReactNode } from 'react';
-import type { Session } from '@/lib/AuthClient';
+import type { Session } from '@/lib/auth-client';
 
 interface ProvidersProps {
   children: ReactNode;
@@ -20,6 +20,7 @@ export function Providers({ children, session }: ProvidersProps) {
       <NextAppProvider
         theme={theme}
         session={session}
+        
       >
         <MuiThemeProvider theme={theme}>
           <CssBaseline />
