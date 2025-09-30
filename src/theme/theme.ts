@@ -68,7 +68,7 @@ const theme = createTheme({
       fontWeight: 500,
     },
     button: {
-      fontFamily: fontAccent,
+      fontFamily: fontPrimary,
       textTransform: "none",
       fontWeight: 600,
     },

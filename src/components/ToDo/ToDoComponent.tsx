@@ -23,6 +23,8 @@ interface ProvidersProps {
   todos: Todo[];
 }
 
+//TODO: multi user support
+
 export default function ToDoComponent({ session, todos }: ProvidersProps) {
   const [rows, setRows] = React.useState<Todo[]>(todos);
   const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>(

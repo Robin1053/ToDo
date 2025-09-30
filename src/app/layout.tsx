@@ -16,8 +16,6 @@ export default async function RootLayout({
     headers: await headers()
   })
 
-  await authClient.oneTap();
-
   console.log("Session aus Better Auth:", session);
 
   return (

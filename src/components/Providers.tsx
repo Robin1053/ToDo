@@ -6,13 +6,15 @@ import { NextAppProvider } from "@toolpad/core/nextjs";
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import type { ReactNode } from 'react';
-import type { Session } from '@/lib/auth-client';
+import { authClient, type Session } from '@/lib/auth-client';
 
 
 interface ProvidersProps {
   children: ReactNode;
   session: Session | null;
 }
+
+await authClient.oneTap();
 
 export function Providers({ children, session }: ProvidersProps) {
 
@@ -22,7 +24,14 @@ export function Providers({ children, session }: ProvidersProps) {
       <NextAppProvider
         theme={theme}
         session={session}
-
+        authentication={{
+          signIn: () => {
+            window.location.href = "/auth/signin";
+          },
+          signOut: async () => {
+            await authClient.signOut();
+          }
+        }}
       >
         <MuiThemeProvider theme={theme}>
           <CssBaseline />

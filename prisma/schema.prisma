@@ -117,3 +117,5 @@ model TodoShare {
 
   @@unique([todoId, userId]) // jeder User nur einmal pro Todo
 }
+
+//TODO: Add models for notes
