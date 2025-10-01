@@ -31,8 +31,7 @@ export const auth = betterAuth({
       scopes: [
         "https://www.googleapis.com/auth/user.birthday.read",
         "openid",
-        "email",
-        "profile",
+        "profile"
       ],
     },
   },
