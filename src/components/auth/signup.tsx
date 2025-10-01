@@ -193,7 +193,7 @@ export default function SignupComponent() {
                             variant="standard"
                         >
                             <InputLabel
-                                htmlFor="standard-adornment-password">
+                                htmlFor="password">
                                 Password
                             </InputLabel>
                             <Input
@@ -202,7 +202,7 @@ export default function SignupComponent() {
                                 onChange={(e) => setPassword(e.target.value)}
                                 name='password'
                                 required
-                                id="standard-adornment-password"
+                                id="repeat-password"
                                 type={showPassword ? 'text' : 'password'}
                                 endAdornment={
                                     <InputAdornment position="end">

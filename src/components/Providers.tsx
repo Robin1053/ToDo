@@ -6,6 +6,7 @@ import { NextAppProvider } from "@toolpad/core/nextjs";
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import type { ReactNode } from 'react';
+import { useEffect } from 'react';
 import { authClient, type Session } from '@/lib/auth-client';
 
 
@@ -14,13 +15,18 @@ interface ProvidersProps {
   session: Session | null;
 }
 
-await authClient.oneTap();
-
 export function Providers({ children, session }: ProvidersProps) {
+  
+  // OneTap sollte INNERHALB der Komponente aufgerufen werden
+  useEffect(() => {
+    console.log("Providers mounted, calling oneTap");
+    authClient.oneTap().catch(err => {
+      console.error("OneTap error:", err);
+    });
+  }, []);
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-
       <NextAppProvider
         theme={theme}
         session={session}

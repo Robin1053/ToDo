@@ -2,6 +2,7 @@
   "name": "better-auth",
   "version": "0.1.0",
   "private": false,
+  "repository": "https://github.com/Robin1053/ToDo",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",

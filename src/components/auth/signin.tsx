@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
     Typography,
     CardContent,
@@ -36,6 +36,7 @@ interface ProvidersProps {
 }
 
 export default function SigninComponent({ session }: ProvidersProps) {
+    const [mounted, setMounted] = useState(false);
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
@@ -43,22 +44,42 @@ export default function SigninComponent({ session }: ProvidersProps) {
     const [password, setPassword] = useState('');
     const [rememberMe, setRememberMe] = useState(false);
 
-    const handleClickShowPassword = () => setShowPassword((show) => !show);
-    
+    useEffect(() => {
+        console.log("Component mounted!");
+        setMounted(true);
+    }, []);
+
+    if (!mounted) {
+        return <div>Loading...</div>;
+    }
+
+    const handleClickShowPassword = () => { setShowPassword((show) => !show); };
+
     const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
     };
-    
+
     const handleMouseUpPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
     };
 
-    const handleEmailSignIn = async (event: React.FormEvent) => {
-        event.preventDefault();
-        console.log("E-Mail Anmeldung gestartet");
+    const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setEmail(e.target.value);
+    };
+
+    const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setPassword(e.target.value);
+    };
+
+    const handleRememberMeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setRememberMe(e.target.checked);
+    };
+
+    const handleEmailSignIn = async () => {
+        console.log("=== SIGN IN CLICKED ===");
         console.log("Email:", email);
         console.log("Password length:", password.length);
-        
+
         setLoading(true);
         setErrorMessage('');
 
@@ -76,9 +97,9 @@ export default function SigninComponent({ session }: ProvidersProps) {
                 rememberMe: rememberMe,
                 callbackURL: "/",
             });
-            
+
             console.log(`Trying to sign in with ${email}...`);
-            
+
             if (error) {
                 console.error("Error signing in with email:", error);
                 setErrorMessage("Fehler beim Anmelden: " + error.message);
@@ -94,10 +115,8 @@ export default function SigninComponent({ session }: ProvidersProps) {
         }
     };
 
-    const handlePasskeySignIn = async (event: React.MouseEvent) => {
-        event.preventDefault();
-        console.log("Passkey Anmeldung gestartet");
-        
+    const handlePasskeySignIn = async () => {
+        console.log("=== PASSKEY CLICKED ===");
         setLoading(true);
         setErrorMessage('');
 
@@ -125,10 +144,10 @@ export default function SigninComponent({ session }: ProvidersProps) {
     };
 
     const handleGoogleSignIn = async () => {
-        console.log("Google Anmeldung gestartet");
+        console.log("=== GOOGLE CLICKED ===");
         setLoading(true);
         setErrorMessage('');
-        
+
         try {
             await signIn.social(
                 {
@@ -167,6 +186,9 @@ export default function SigninComponent({ session }: ProvidersProps) {
             flexDirection: 'column'
         }}>
             <CardHeader title="Bitte melden Sie sich an" />
+            {/* <Box sx={{ p: 1, bgcolor: 'success.main', color: 'white', textAlign: 'center', fontSize: '12px' }}>
+                ✓ Komponente geladen | Email: {email.length} | Pass: {password.length}
+            </Box> */}
             <CardContent sx={{
                 width: '100%',
                 display: 'flex',
@@ -187,18 +209,14 @@ export default function SigninComponent({ session }: ProvidersProps) {
                         {errorMessage}
                     </Alert>
                 )}
-                
-                <Box
-                    component="form"
-                    onSubmit={handleEmailSignIn}
-                    sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        gap: 2,
-                        width: 300
-                    }}
-                >
+
+                <Box sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: 2,
+                    width: 300
+                }}>
                     <TextField
                         fullWidth
                         id="email"
@@ -207,14 +225,10 @@ export default function SigninComponent({ session }: ProvidersProps) {
                         name='email'
                         type='email'
                         value={email}
-                        onChange={(e) => {
-                            console.log("Email changed:", e.target.value);
-                            setEmail(e.target.value);
-                        }}
-                        required
+                        onChange={handleEmailChange}
                         disabled={loading}
                     />
-                    
+
                     <FormControl fullWidth variant="standard">
                         <InputLabel htmlFor="password">Passwort</InputLabel>
                         <Input
@@ -222,11 +236,7 @@ export default function SigninComponent({ session }: ProvidersProps) {
                             id="password"
                             name="password"
                             type={showPassword ? 'text' : 'password'}
-                            onChange={(e) => {
-                                console.log("Password changed, length:", e.target.value.length);
-                                setPassword(e.target.value);
-                            }}
-                            required
+                            onChange={handlePasswordChange}
                             disabled={loading}
                             endAdornment={
                                 <InputAdornment position="end">
@@ -243,7 +253,7 @@ export default function SigninComponent({ session }: ProvidersProps) {
                             }
                         />
                     </FormControl>
-                    
+
                     <Box sx={{
                         display: 'flex',
                         justifyContent: 'space-between',
@@ -256,10 +266,7 @@ export default function SigninComponent({ session }: ProvidersProps) {
                                     id='rememberMe'
                                     name='rememberMe'
                                     checked={rememberMe}
-                                    onChange={(e) => {
-                                        console.log("Remember me changed:", e.target.checked);
-                                        setRememberMe(e.target.checked);
-                                    }}
+                                    onChange={handleRememberMeChange}
                                     disabled={loading}
                                 />
                             }
@@ -285,7 +292,7 @@ export default function SigninComponent({ session }: ProvidersProps) {
                         <Button
                             variant="contained"
                             color="primary"
-                            type='submit'
+                            onClick={handleEmailSignIn}
                             disabled={loading}
                             sx={{
                                 flexGrow: 1,
@@ -308,14 +315,14 @@ export default function SigninComponent({ session }: ProvidersProps) {
                         </Button>
                     </Box>
                 </Box>
-                
+
                 {loading && (
                     <LinearProgress sx={{
                         width: 300,
                         my: 3,
                     }} />
                 )}
-                
+
                 {!loading && (
                     <Divider sx={{
                         my: 3,
@@ -324,7 +331,7 @@ export default function SigninComponent({ session }: ProvidersProps) {
                         Oder melden Sie sich an mit
                     </Divider>
                 )}
-                
+
                 <Box sx={{
                     gap: 2,
                     display: 'flex',
@@ -336,6 +343,7 @@ export default function SigninComponent({ session }: ProvidersProps) {
                         onClick={handlePasskeySignIn}
                         startIcon={<KeyIcon />}
                         disabled={loading}
+                        loading={loading}
                         sx={{
                             width: 300,
                             minHeight: 48,
@@ -344,7 +352,7 @@ export default function SigninComponent({ session }: ProvidersProps) {
                     >
                         {loading ? 'Wird angemeldet...' : 'Mit Passkey anmelden'}
                     </Button>
-                    
+
                     <Button
                         startIcon={
                             <SvgIcon>
@@ -366,6 +374,7 @@ export default function SigninComponent({ session }: ProvidersProps) {
                             color: '#E3E3E3'
                         }}
                         disabled={loading}
+                        loading={loading}
                         onClick={handleGoogleSignIn}
                     >
                         {loading ? 'Wird angemeldet...' : 'Mit Google anmelden'}

@@ -25,13 +25,16 @@ export const auth = betterAuth({
   },
 
   socialProviders: {
+
+    //TODO: Profil-pic fixen
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
       scopes: [
         "https://www.googleapis.com/auth/user.birthday.read",
         "openid",
-        "profile"
+        "profile",
+        "email"
       ],
     },
   },
