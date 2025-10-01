@@ -1,10 +1,7 @@
 "use client";
 
-
 import * as React from 'react';
-import {
-    useState
-} from 'react';
+import { useState } from 'react';
 import {
     Typography,
     CardContent,
@@ -43,22 +40,22 @@ interface ProvidersProps {
 export default function SigninComponent({ session }: ProvidersProps) {
 
 
-    const [loading, setLoading] = useState(false);
-    const [showPassword, setShowPassword] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [rememberMe, setRememberMe] = useState(false);
-    const handleClickShowPassword = () => setShowPassword((show) => !show);
-    const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const [loading, setLoading]             = useState(true);
+    const [showPassword, setShowPassword]   = useState(false);
+    const [errorMessage, setErrorMessage]   = useState('');
+    const [email, setEmail]                 = useState('');
+    const [password, setPassword]           = useState('');
+    const [rememberMe, setRememberMe]       = useState(false);
+    const handleClickShowPassword           = () => setShowPassword((show) => !show);
+    const handleMouseDownPassword           = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
     };
-    const handleMouseUpPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const handleMouseUpPassword             = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
     };
 
 
-    const handleEmailSignIn = async (event: React.FormEvent) => {
+    const handleEmailSignIn                 = async (event: React.FormEvent) => {
 
         event.preventDefault();
         // Ihre E-Mail-Anmelde-Logik hier
@@ -268,11 +265,10 @@ export default function SigninComponent({ session }: ProvidersProps) {
                     </Box>
                     {loading && (
                         <LinearProgress
-                            style={
+                            sx={
                                 {
                                     width: 300,
-                                    marginTop: 3,
-                                    marginBottom: 3
+                                    my: 3,
                                 }
                             }
                         />
