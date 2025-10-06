@@ -19,7 +19,8 @@ import {
     Divider,
     Box,
     Alert,
-    LinearProgress
+    LinearProgress,
+    CircularProgress,
 } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
@@ -36,7 +37,6 @@ interface ProvidersProps {
 }
 
 export default function SigninComponent({ session }: ProvidersProps) {
-    const [mounted, setMounted] = useState(false);
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
@@ -44,14 +44,6 @@ export default function SigninComponent({ session }: ProvidersProps) {
     const [password, setPassword] = useState('');
     const [rememberMe, setRememberMe] = useState(false);
 
-    useEffect(() => {
-        console.log("Component mounted!");
-        setMounted(true);
-    }, []);
-
-    if (!mounted) {
-        return <div>Loading...</div>;
-    }
 
     const handleClickShowPassword = () => { setShowPassword((show) => !show); };
 

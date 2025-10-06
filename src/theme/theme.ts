@@ -52,18 +52,19 @@ const theme = createTheme({
   },
   typography: {
     fontFamily: fontPrimary,
+    
     h1: {
-      fontFamily: fontSecondary,
+      fontFamily: fontPrimary,
       fontSize: "2.5rem",
       fontWeight: 400,
     },
     h2: {
-      fontFamily: fontSecondary,
+      fontFamily: fontPrimary,
       fontSize: "2rem",
       fontWeight: 400,
     },
     h3: {
-      fontFamily: fontAccent,
+      fontFamily: fontPrimary,
       fontSize: "1.75rem",
       fontWeight: 500,
     },

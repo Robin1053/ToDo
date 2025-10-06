@@ -1,3 +1,4 @@
+
 datasource db {
   provider = "sqlite"
   url      = "file:./dev.db"
@@ -115,7 +116,8 @@ model TodoShare {
   user User @relation("UserSharedTodos", fields: [userId], references: [id], onDelete: Cascade)
   User User @relation(fields: [userId], references: [id])
 
-  @@unique([todoId, userId]) // jeder User nur einmal pro Todo
+  // jeder User nur einmal pro Todo
+  @@unique([todoId, userId])
 }
 
 //TODO: Add models for notes

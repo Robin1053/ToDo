@@ -1,8 +1,11 @@
+// lib/auth.ts
+
 import { betterAuth } from "better-auth";
 import { passkey } from "better-auth/plugins/passkey";
 import { nextCookies } from "better-auth/next-js";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { PrismaClient } from "@prisma/client";
+
 
 const prisma = new PrismaClient();
 
