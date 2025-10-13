@@ -33,7 +33,7 @@ export default function ProfileMenu({ session }: { session: Session | null }) {
               }
             }>
             <Avatar
-              alt={session.user.name || "Guest"}
+              alt={session.user.name}
               src={session.user.image || "/imgs/guest_user.jpg"} />
           </IconButton>
         </Tooltip>
@@ -68,6 +68,7 @@ export default function ProfileMenu({ session }: { session: Session | null }) {
                 handleCloseUserMenu();
                 if (item.label === "Logout") {
                   await authClient.signOut();
+                  window.location.reload();
                 }
               }
               } component="a"

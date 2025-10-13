@@ -15,7 +15,9 @@ import {
     Divider,
     Box,
     Alert,
-    SvgIcon
+    SvgIcon,
+    Avatar,
+    Typography
 } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
@@ -37,7 +39,9 @@ export default function SignupComponent() {
     const [repeatPassword, setRepeatPassword] = React.useState("")
     const [pswrError, setPswError] = React.useState(false);
     const [MailError, setMailError] = React.useState(false);
-    const [loading, setLoading] = React.useState(false)
+    const [loading, setLoading] = React.useState(false);
+    const [profilePic, setProfilePic] = React.useState<File | null>(null);
+    const [profilePicPreview, setProfilePicPreview] = React.useState<string>('')
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
     const handleClickShowRepeatPassword = () => setShowRepeatPassword((show) => !show);
@@ -54,6 +58,63 @@ export default function SignupComponent() {
         event.preventDefault();
     };
 
+    const handleProfilePicChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            // Validiere Dateityp
+            const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+            if (!allowedTypes.includes(file.type)) {
+                setError('Nur JPEG, PNG und WebP Dateien sind erlaubt');
+                return;
+            }
+
+            // Validiere Dateigröße (max 5MB)
+            const maxSize = 5 * 1024 * 1024; // 5MB
+            if (file.size > maxSize) {
+                setError('Datei ist zu groß (max 5MB)');
+                return;
+            }
+
+            setProfilePic(file);
+
+            // Erstelle Preview
+            const reader = new FileReader();
+            reader.onload = () => {
+                setProfilePicPreview(reader.result as string);
+            };
+            reader.readAsDataURL(file);
+            setError(''); // Lösche vorherige Fehler
+        }
+    };
+
+    const uploadProfilePic = async (userId: string): Promise<string | null> => {
+        if (!profilePic) return null;
+
+        const formData = new FormData();
+        formData.append('profilePic', profilePic);
+        formData.append('userId', userId);
+
+        try {
+            const response = await fetch('/api/auth/profile-pics', {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                return data.imagePath;
+            } else {
+                const errorData = await response.json();
+                setError(errorData.error || 'Fehler beim Upload des Profilbildes');
+                return null;
+            }
+        } catch (error) {
+            console.error('Fehler beim Upload:', error);
+            setError('Fehler beim Upload des Profilbildes');
+            return null;
+        }
+    };
+
 
 
 
@@ -64,31 +125,75 @@ export default function SignupComponent() {
         } else {
             setError("");
             event.preventDefault();
+            setLoading(true);
+
             if (!email || !password || !name) {
                 console.error("E-Mail, Password or Name is missing.");
                 setError("E-Mail, Password or Name is missing.");
                 setPswError(true);
                 setMailError(true);
+                setLoading(false);
                 return;
             }
+
             try {
+                // Erst den Benutzer registrieren
                 const { data, error } = await authClient.signUp.email({
-                    name: name, // required
-                    email: email, // required
-                    password: password, // required
+                    name: name,
+                    email: email,
+                    password: password,
                     Birthday: Birthday.toDate(),
                     callbackURL: "/",
                 });
+
                 console.log(`Try with ${email} and Password ${password}...`);
+
                 if (error) {
                     console.error("Error with the registration:", error);
-                    setError("Error with the registration: " + error.message)
-                } else {
-                    console.log("E-Mail registration successful!", data);
+                    setError("Error with the registration: " + error.message);
+                    setLoading(false);
+                    return;
                 }
+
+                console.log("E-Mail registration successful!", data);
+
+                // Wenn ein Profilbild ausgewählt wurde, lade es hoch
+                if (profilePic && data?.user?.id) {
+                    console.log("Uploading profile picture...");
+                    const imagePath = await uploadProfilePic(data.user.id);
+                    if (imagePath) {
+                        console.log("Profile picture uploaded successfully:", imagePath);
+
+                        // Aktualisiere das Profilbild in der Datenbank
+                        try {
+                            const updateResponse = await fetch('/api/auth/update-profile-pic', {
+                                method: 'PATCH',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({
+                                    userId: data.user.id,
+                                    imagePath: imagePath,
+                                }),
+                            });
+
+                            if (updateResponse.ok) {
+                                console.log("Profile picture updated in database successfully");
+                            } else {
+                                console.error("Failed to update profile picture in database");
+                            }
+                        } catch (updateError) {
+                            console.error("Error updating profile picture in database:", updateError);
+                        }
+                    }
+                }
+
+                setLoading(false);
+
             } catch (err) {
                 setError("Unexpected error during email registration.");
                 console.error("Unexpected error during email registration:", err);
+                setLoading(false);
             }
         }
     }
@@ -182,6 +287,70 @@ export default function SignupComponent() {
                             error={MailError}
                             helperText={MailError ? "Invalid E-Mail Address" : ""}
                         />
+
+                        {/* Profilbild Upload */}
+                        <Box sx={
+                            {
+                                width: 300,
+                                textAlign: 'center',
+                                mt: 2
+                            }
+                        }>
+                            <Typography
+                                variant="body2"
+                                sx={
+                                    {
+                                        mb: 1
+                                    }
+                                }>
+                                Profilbild (optional)
+                            </Typography>
+
+                            {profilePicPreview && (
+                                <Avatar
+                                    src={profilePicPreview}
+                                    sx={
+                                        {
+                                            width: 80,
+                                            height: 80,
+                                            mx: 'auto',
+                                            mb: 2
+                                        }
+                                    }
+                                />
+                            )}
+
+                            <Button
+                                variant="outlined"
+                                component="label"
+                                sx={
+                                    { width: '100%' }
+                                }
+                                disabled={loading}
+                                loading={loading}
+                            >
+                                {profilePic ? 'Bild ändern' : 'Bild auswählen'}
+                                <input
+                                    type="file"
+                                    hidden
+                                    accept="image/*"
+                                    onChange={handleProfilePicChange}
+                                />
+                            </Button>
+
+                            {profilePic && (
+                                <Typography
+                                    variant="caption"
+                                    sx={
+                                        {
+                                            display: 'block',
+                                            mt: 1
+                                        }
+                                    }>
+                                    {profilePic.name}
+                                </Typography>
+                            )}
+                        </Box>
 
                         <FormControl
                             required
@@ -278,6 +447,7 @@ export default function SignupComponent() {
                                 variant="contained"
                                 color="primary"
                                 type='submit'
+                                disabled={loading}
                                 sx={
                                     {
                                         flexGrow: 1,
@@ -287,7 +457,7 @@ export default function SignupComponent() {
                                         },
                                     }
                                 }>
-                                Sign Up
+                                {loading ? 'Wird registriert...' : 'Sign Up'}
                             </Button>
                             <Button
                                 variant="outlined"

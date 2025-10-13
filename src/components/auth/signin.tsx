@@ -20,7 +20,6 @@ import {
     Box,
     Alert,
     LinearProgress,
-    CircularProgress,
 } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
@@ -31,6 +30,7 @@ import {
     signIn
 } from '@/lib/auth-client';
 import SvgIcon from '@mui/material/SvgIcon';
+import FingerprintIcon from '@mui/icons-material/Fingerprint';
 
 interface ProvidersProps {
     session: Session | null;
@@ -66,6 +66,7 @@ export default function SigninComponent({ session }: ProvidersProps) {
     const handleRememberMeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setRememberMe(e.target.checked);
     };
+
 
     const handleEmailSignIn = async () => {
         console.log("=== SIGN IN CLICKED ===");
@@ -370,6 +371,21 @@ export default function SigninComponent({ session }: ProvidersProps) {
                         onClick={handleGoogleSignIn}
                     >
                         {loading ? 'Wird angemeldet...' : 'Mit Google anmelden'}
+                    </Button>
+                    <Button
+                        variant='outlined'
+                        startIcon={<FingerprintIcon />}
+                        sx={
+                            {
+                                width: 300,
+                                minHeight: 48,
+                            }
+                        }
+                        disabled={loading}
+                        loading={loading}
+                        onClick={handlePasskeySignIn}
+                    >
+                        {loading ? 'Wird angemeldet...' : 'Mit Fingerabdruck anmelden'}
                     </Button>
                 </Box>
             </CardContent>
