@@ -8,10 +8,11 @@ export default function NotesPage() {
             justifyContent="center"
             alignItems="center"
             minHeight="100vh"
-            >
+        >
             <Typography
                 variant="h1"
                 color="info"
+                fontFamily={"'Sour Gummy', cursive"}
             >
                 Here will come a Notes Page
             </Typography>

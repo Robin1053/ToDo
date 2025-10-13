@@ -23,7 +23,7 @@ import {
 } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import KeyIcon from '@mui/icons-material/Key';
+import Icon from '@mui/material/Icon';
 import {
     authClient,
     Session,
@@ -334,7 +334,7 @@ export default function SigninComponent({ session }: ProvidersProps) {
                     <Button
                         variant='outlined'
                         onClick={handlePasskeySignIn}
-                        startIcon={<KeyIcon />}
+                        startIcon={<Icon>Passkey</Icon>}
                         disabled={loading}
                         loading={loading}
                         sx={{
@@ -343,7 +343,7 @@ export default function SigninComponent({ session }: ProvidersProps) {
                             font: 'Roboto',
                         }}
                     >
-                        {loading ? 'Wird angemeldet...' : 'Mit Passkey anmelden'}
+                        {loading ? 'Loading...' : 'Login with Passkey'}
                     </Button>
 
                     <Button
@@ -370,9 +370,9 @@ export default function SigninComponent({ session }: ProvidersProps) {
                         loading={loading}
                         onClick={handleGoogleSignIn}
                     >
-                        {loading ? 'Wird angemeldet...' : 'Mit Google anmelden'}
+                        {loading ? 'Loading...' : 'Login with Google'}
                     </Button>
-                    <Button
+                    {/* <Button
                         variant='outlined'
                         startIcon={<FingerprintIcon />}
                         sx={
@@ -385,8 +385,8 @@ export default function SigninComponent({ session }: ProvidersProps) {
                         loading={loading}
                         onClick={handlePasskeySignIn}
                     >
-                        {loading ? 'Wird angemeldet...' : 'Mit Fingerabdruck anmelden'}
-                    </Button>
+                        {loading ? 'Loading...' : 'Login with Passkey'}
+                    </Button> */}
                 </Box>
             </CardContent>
         </Card>

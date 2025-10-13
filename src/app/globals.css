@@ -2,11 +2,64 @@
 /*@import url("https://fonts.googleapis.com/css2?family=Pacifico&family=Roboto:wght@100..900&family=Sour+Gummy:wght@100..900&display=swap");
 */
 :root {
-  --font-roboto: 'Roboto', sans-serif;
-  --font-pacifico: 'Pacifico', cursive;
-  --font-sourgummy: 'Sour Gummy', cursive;
+  --font-roboto: "Roboto", sans-serif;
+  --font-pacifico: "Pacifico", cursive;
+  --font-sourgummy: "Sour Gummy", cursive;
 }
-body{
-    margin: 0;
-    font-family: var(--font-roboto);
+body {
+  margin: 0;
+  font-family: var(--font-roboto);
+}
+.material-symbols-outlined {
+  font-family: "Material Symbols Outlined";
+  font-weight: normal;
+  font-style: normal;
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+}
+
+@font-face {
+  font-family: "Material Symbols Outlined";
+  src: url(/fonts/Material_Symbols_Outlined/MaterialSymbolsOutlined-VariableFont_FILL\,GRAD\,opsz\,wght.ttf)
+    format("truetype");
+  font-style: normal;
+}
+@font-face {
+  font-family: "Material Symbols Rounded";
+  src: url(/public/fonts/Material_Symbols_Rounded/MaterialSymbolsRounded-VariableFont_FILL\,GRAD\,opsz\,wght.ttf)
+    format("truetype");
+  font-style: normal;
+}
+@font-face {
+  font-family: "Material Symbols Sharp";
+  src: url(/fonts/Material_Symbols_Sharp/MaterialSymbolsSharp-VariableFont_FILL\,GRAD\,opsz\,wght.ttf)
+    format("truetype");
+  font-style: normal;
+}
+
+@font-face {
+  font-family: Roboto;
+  src: url(/fonts/Roboto/Roboto-VariableFont.ttf) format("truetype");
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  font-stretch: 75% 100%;
+}
+@font-face {
+  font-family: Pacifico;
+  src: url(/fonts/Pacifico/Pacifico-Regular.ttf) format("truetype");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: Sour Gummy;
+  src: url(/fonts/SourGummy/SourGummy-VariableFont_wght.ttf) format("truetype");
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  font-stretch: 100% 125%;
 }
