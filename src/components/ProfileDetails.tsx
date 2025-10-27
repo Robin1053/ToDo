@@ -14,6 +14,7 @@ import {
     Input,
     InputAdornment,
     IconButton,
+    Alert,
 } from "@mui/material"
 import { Visibility, VisibilityOff, Fingerprint } from "@mui/icons-material"
 import { DatePicker } from "@mui/x-date-pickers"
@@ -26,7 +27,7 @@ export default function ProfileDetails({ session }: { session: Session }) {
     const [showRepeatPassword, setShowRepeatPassword] = React.useState(false)
     const [pswrError, setPswrError] = React.useState(false)
     const [loading, setLoading] = React.useState(false)
-    const [error, setError] = React.useState('');
+    const [Error, setError] = React.useState('');
 
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -71,6 +72,21 @@ export default function ProfileDetails({ session }: { session: Session }) {
                         alignItems: 'center',
                     }
                 }>
+                {Error && (
+                    <Alert
+                        variant='outlined'
+                        severity="error"
+                        sx={
+                            {
+                                width: 300,
+                                minHeight: 48,
+                            }
+                        }
+                    >{Error}
+
+                    </Alert>
+                )
+                }
 
                 <Box
                     sx={
@@ -187,7 +203,7 @@ export default function ProfileDetails({ session }: { session: Session }) {
                         loading={loading}
                         onClick={handlePasskeySignIn}
                     >
-                        {loading ? 'Wird angemeldet...' : 'Mit Fingerabdruck anmelden'}
+                        {loading ? 'Wird registriert...' : 'Registriere Passkey...'}
                     </Button>
                     {/* <DatePicker
                         defaultValue={dayjs(session.user.Birthday)}
